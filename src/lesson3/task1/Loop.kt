@@ -2,7 +2,7 @@
 
 package lesson3.task1
 
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -72,7 +72,15 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var k = 1
+    var p = abs(n)
+    while (p > 9) {
+        k += 1
+        p /= 10
+    }
+    return k
+}
 
 /**
  * Простая (2 балла)
@@ -80,21 +88,53 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    var f1 = 1
+    var f2 = 1
+    var f3 = 0
+    return if (n == 1 || n == 2) 1
+    else {
+        for (i in 3..n) {
+            f3 = f2 + f1
+            f1 = f2
+            f2 = f3
+        }
+        f3
+    }
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    val min: Int
+    for (i in 2..sqrt(n.toDouble()).toInt()) {
+        if (n % i == 0) {
+            min = i
+            return min
+        }
+    }
+    return n
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    val min: Int
+    for (i in 2..sqrt(n.toDouble()).toInt()) {
+        if (n % i == 0) {
+            min = i
+            return (n / min)
+        }
+    }
+    return 1
+}
+
 
 /**
  * Простая (2 балла)
@@ -120,7 +160,16 @@ fun collatzSteps(x: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun lcm(m: Int, n: Int): Int {
+    var k = 0
+    val p = m * n
+    for (i in 1..n) {
+        if (m % i == 0 && n % i == 0 && i <= n && i <= m) {
+            k = i
+        }
+    }
+    return p / k
+}
 
 /**
  * Средняя (3 балла)
@@ -129,7 +178,17 @@ fun lcm(m: Int, n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean {
+    var a = m
+    var b = n
+    while (a != 0 && b != 0) {
+        if (a > b)
+            a %= b
+        else b %= a
+    }
+    if (a == 1 || b == 1) return true
+    return false
+}
 
 /**
  * Средняя (3 балла)
@@ -138,7 +197,8 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean = sqrt(n.toDouble()).toInt().toDouble().pow(2.0) >= m
+
 
 /**
  * Средняя (3 балла)
@@ -147,7 +207,16 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var a = n
+    var b = 0
+    val c = digitNumber(n)
+    for (i in 0 until c) {
+        b += (a % 10) * 10.0.pow((c - i - 1).toDouble()).toInt()
+        a /= 10
+    }
+    return b
+}
 
 /**
  * Средняя (3 балла)
