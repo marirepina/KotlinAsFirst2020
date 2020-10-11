@@ -114,12 +114,12 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
-    val loss1 = kingX == rookX1 || kingX == rookX2
-    val loss2 = kingY == rookY1 || kingY == rookY2
+    val loss1 = kingX == rookX1 || kingY == rookY1
+    val loss2 = kingX == rookX2 || kingY == rookY2
     return when {
         loss1 && loss2 -> 3
-        loss1 && !loss2 -> 2
-        !loss1 && loss2 -> 1
+        !loss1 && loss2 -> 2
+        loss1 && !loss2 -> 1
         else -> 0
     }
 }
