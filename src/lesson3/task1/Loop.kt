@@ -91,15 +91,14 @@ fun digitNumber(n: Int): Int {
 fun fib(n: Int): Int {
     var f1 = 1
     var f2 = 1
-    var f3 = 0
     return if (n == 1 || n == 2) 1
     else {
         for (i in 3..n) {
-            f3 = f2 + f1
+            val f3 = f2 + f1
             f1 = f2
             f2 = f3
         }
-        f3
+        f2
     }
 }
 
@@ -109,11 +108,9 @@ fun fib(n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    val min: Int
     for (i in 2..sqrt(n.toDouble()).toInt()) {
         if (n % i == 0) {
-            min = i
-            return min
+            return i
         }
     }
     return n
@@ -124,16 +121,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    val min: Int
-    for (i in 2..sqrt(n.toDouble()).toInt()) {
-        if (n % i == 0) {
-            min = i
-            return (n / min)
-        }
-    }
-    return 1
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 
 /**
@@ -160,16 +148,17 @@ fun collatzSteps(x: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
-    var k = 0
-    val p = m * n
-    for (i in 1..n) {
-        if (m % i == 0 && n % i == 0 && i <= n && i <= m) {
-            k = i
-        }
+fun nod(m: Int, n: Int): Int {
+    var a = m
+    var b = n
+    while (a != 0 && b != 0) {
+        if (a > b)
+            a %= b
+        else b %= a
     }
-    return p / k
+    return max(a, b)
 }
+fun lcm(m: Int, n: Int): Int = m * n / nod(m, n)
 
 /**
  * Средняя (3 балла)
@@ -178,17 +167,7 @@ fun lcm(m: Int, n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    var a = m
-    var b = n
-    while (a != 0 && b != 0) {
-        if (a > b)
-            a %= b
-        else b %= a
-    }
-    if (a == 1 || b == 1) return true
-    return false
-}
+fun isCoPrime(m: Int, n: Int): Boolean = nod(m, n) == 1
 
 /**
  * Средняя (3 балла)

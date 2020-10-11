@@ -74,8 +74,7 @@ fun ageDescription(age: Int): String {
     return when (age % 10) {
         1 -> "$age год"
         2, 3, 4 -> "$age года"
-        5, 6, 7, 8, 9, 0 -> "$age лет"
-        else -> "несущестующий возраст"
+        else -> "$age лет"
     }
 }
 
@@ -96,7 +95,7 @@ fun timeForHalfWay(
     val s2 = v2 * t2
     return when {
         s <= s1 -> s / v1
-        (s > s1) && (s <= s1 + s2) -> t1 + (s - s1) / v2
+        (s <= s1 + s2) -> t1 + (s - s1) / v2
         else -> t1 + t2 + (s - s1 - s2) / v3
     }
 }
@@ -115,14 +114,12 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
-    val loss1 = kingX == rookX1
-    val loss2 = kingY == rookY1
-    val loss3 = kingX == rookX2
-    val loss4 = kingY == rookY2
+    val loss1 = kingX == rookX1 || kingX == rookX2
+    val loss2 = kingY == rookY1 || kingY == rookY2
     return when {
-        (loss1 || loss2) && (loss3 || loss4) -> 3
-        (loss1 || loss2) -> 1
-        (loss3 || loss4) -> 2
+        loss1 && loss2 -> 3
+        loss1 && !loss2 -> 2
+        !loss1 && loss2 -> 1
         else -> 0
     }
 }
@@ -142,12 +139,11 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int {
-    val loss1 = kingX == rookX
-    val loss2 = kingY == rookY
+    val loss1 = kingX == rookX || kingY == rookY
     val loss3 = abs(kingX - bishopX) == abs(kingY - bishopY)
     return when {
-        (loss1 || loss2) && loss3 -> 3
-        (loss1 || loss2) -> 1
+        loss1 && loss3 -> 3
+        loss1 -> 1
         loss3 -> 2
         else -> 0
     }
@@ -163,11 +159,26 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    if (a > b + c || a + b < c || a + c < b) return -1
-    if (a * a < b * b + c * c && a * a + b * b > c * c && a * a + c * c > b * b) return 0
-    if (a * a == b * b + c * c || a * a + b * b == c * c || a * a + c * c == b * b) return 1
-    if (a * a > b * b + c * c || a * a + b * b < c * c || a * a + c * c < b * b) return 2
-    return 5
+    when (maxOf(a, b, c)) {
+        a -> {
+            if (a > b + c) return -1
+            if (a * a < b * b + c * c) return 0
+            if (a * a == b * b + c * c) return 1
+            return 2
+        }
+        b -> {
+            if (b > a + c) return -1
+            if (b * b < a * a + c * c) return 0
+            if (b * b == a * a + c * c) return 1
+            return 2
+        }
+        else -> {
+            if (c > a + b) return -1
+            if (c * c < a * a + b * b) return 0
+            if (c * c == a * a + b * b) return 1
+            return 2
+        }
+    }
 }
 
 /**
@@ -179,6 +190,6 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if (a <= d && c <= b) return abs(min(b, d) - max(a, c))
+    if (a <= d && c <= b) return min(b, d) - max(a, c)
     return -1
 }

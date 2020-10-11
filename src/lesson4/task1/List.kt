@@ -121,10 +121,8 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * Модуль пустого вектора считать равным 0.0.
  */
 fun abs(v: List<Double>): Double {
-    if (v.isEmpty())
-        return 0.0
     var a = 0.0
-    for (i in v.indices)
+    for (i in 0 until v.size)
         a += v[i].pow(2.0)
     return sqrt(a)
 }
@@ -135,14 +133,6 @@ fun abs(v: List<Double>): Double {
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
 fun mean(list: List<Double>): Double {
-    /*var sum = 0.0
-    var k = 0
-    for (element in list) {
-        sum += element
-        k += 1
-    }
-    if (k == 0) return 0.0
-    return sum / k */
     return if (list.isEmpty()) 0.0
     else list.sum() / list.size
 }
@@ -156,7 +146,7 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    val a = list.sum() / list.size
+    val a = mean(list)
     if (list.isEmpty()) return list
     else for (i in 0 until list.size)
         list[i] -= a
@@ -172,8 +162,6 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
 fun times(a: List<Int>, b: List<Int>): Int {
-    if (a.isEmpty())
-        return 0
     var c = 0
     for (i in a.indices) {
         c += a[i] * b[i]
@@ -190,8 +178,6 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Значение пустого многочлена равно 0 при любом x.
  */
 fun polynom(p: List<Int>, x: Int): Int {
-    if (p.isEmpty())
-        return 0
     var a = 0
     for (i in p.indices) {
         a += p[i] * x.toDouble().pow(i.toDouble()).toInt()
@@ -210,14 +196,9 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    if (list.isEmpty())
-        return list
     var a = 0
-    var b: Int
     for (i in list.indices) {
-        b = a
-        a += list[i]
-        list[i] += b
+        a += list[i].also { list[i] += a }
     }
     return list
 }
