@@ -122,8 +122,8 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  */
 fun abs(v: List<Double>): Double {
     var a = 0.0
-    for (i in 0 until v.size)
-        a += v[i].pow(2.0)
+    for (e in v)
+        a += e.pow(2.0)
     return sqrt(a)
 }
 
@@ -147,8 +147,7 @@ fun mean(list: List<Double>): Double {
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     val a = mean(list)
-    if (list.isEmpty()) return list
-    else for (i in 0 until list.size)
+    for (i in 0 until list.size)
         list[i] -= a
     return list
 }
@@ -196,9 +195,8 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    var a = 0
-    for (i in list.indices) {
-        a += list[i].also { list[i] += a }
+    for (i in 1 until list.size) {
+        list[i] += list[i - 1]
     }
     return list
 }

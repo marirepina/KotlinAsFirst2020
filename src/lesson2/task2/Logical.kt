@@ -75,6 +75,5 @@ fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean =
     when (maxOf(a, b, c)) {
         a -> (b <= r && c <= s || b <= s && c <= r)
         b -> (a <= r && c <= s || a <= s && c <= r)
-        c -> (b <= r && a <= s || b <= s && a <= r)
-        else -> false
+        else -> (b <= r && a <= s || b <= s && a <= r)
     }

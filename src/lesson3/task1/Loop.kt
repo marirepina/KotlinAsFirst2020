@@ -158,7 +158,7 @@ fun nod(m: Int, n: Int): Int {
     }
     return max(a, b)
 }
-fun lcm(m: Int, n: Int): Int = m * n / nod(m, n)
+fun lcm(m: Int, n: Int): Int = m / nod(m, n) * n
 
 /**
  * Средняя (3 балла)
