@@ -3,6 +3,7 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import lesson2.task2.queenThreatens
 import kotlin.math.*
 
 // Урок 4: списки
@@ -272,7 +273,13 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    val units = listOf<String>("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX")
+    val tens = listOf<String>("", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC")
+    val hundreds = listOf<String>("", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM")
+    val thousands = listOf<String>("", "M", "MM", "MMM")
+return thousands[n / 1000] + hundreds[n / 100 % 10] + tens[n / 10 % 10] + units[n % 10]
+}
 
 /**
  * Очень сложная (7 баллов)
