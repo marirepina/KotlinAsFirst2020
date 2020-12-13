@@ -176,7 +176,8 @@ fun mostExpensive(description: String): String {
     var maxT = ""
     try {
         for (i in 1 until str.size step 2) {
-            if (str[i].toDouble() > maxN) {
+            val k = str[i].toDouble()
+            if (k > maxN) {
                 maxN = str[i].toDouble()
                 maxT = str[i - 1]
 

@@ -118,7 +118,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
     for ((k, v) in a) {
-        if (k in b && v == b.getValue(k))
+        if (v == b.getValue(k))
         else return false
     }
     return true
@@ -153,7 +153,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Map<Strin
  * В выходном списке не должно быть повторяюихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().intersect(b.toSet()).toList()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b.toList()).toList()
 
 /**
  * Средняя (3 балла)
@@ -354,7 +354,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     list.sortedByDescending { it.second }
     for ((i) in list) {
         if (weight != 0) {
-            if (weight > treasures.getValue(i).first) {
+            if (weight >= treasures.getValue(i).first) {
                 set.add(i)
                 weight -= treasures.getValue(i).first
             } else return set

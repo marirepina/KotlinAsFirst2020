@@ -161,10 +161,12 @@ fun rookOrBishopThreatens(
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     val sorted = mutableListOf(a, b, c)
     sorted.sort()
-    if (sorted[2] > sorted[0] + sorted[1]) return -1
-    if (sorted[2] * sorted[2] < sorted[0] * sorted[0] + sorted[1] * sorted[1]) return 0
-    if (sorted[2] * sorted[2] == sorted[0] * sorted[0] + sorted[1] * sorted[1]) return 1
-    return 2
+    return when {
+        (sorted[2] > sorted[0] + sorted[1]) -> -1
+        (sorted[2] * sorted[2] < sorted[0] * sorted[0] + sorted[1] * sorted[1]) -> 0
+        (sorted[2] * sorted[2] == sorted[0] * sorted[0] + sorted[1] * sorted[1]) -> 1
+        else -> 2
+    }
 }
 
 /**

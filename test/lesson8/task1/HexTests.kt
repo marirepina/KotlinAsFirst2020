@@ -6,12 +6,21 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.lang.IllegalArgumentException
 
+
 class HexTests {
 
     @Test
     @Tag("3")
     fun hexPointDistance() {
         assertEquals(5, HexPoint(6, 1).distance(HexPoint(1, 4)))
+        assertEquals(3, HexPoint(1, 3).distance(HexPoint(2, 5)))
+        assertEquals(8, HexPoint(0, 6).distance(HexPoint(8, 1)))
+        assertEquals(5, HexPoint(6, 1).distance(HexPoint(1, 4)))
+        assertEquals(8, HexPoint(0, 6).distance(HexPoint(8, 1)))
+        assertEquals(4, HexPoint(5, 1).distance(HexPoint(3, 5)))
+        assertEquals(2, HexPoint(4, 2).distance(HexPoint(4, 4)))
+        assertEquals(3, HexPoint(3, 3).distance(HexPoint(5, 0)))
+        assertEquals(3, HexPoint(5, 0).distance(HexPoint(3, 3)))
     }
 
     @Test
@@ -35,6 +44,7 @@ class HexTests {
         assertTrue(HexSegment(HexPoint(1, 5), HexPoint(4, 2)).isValid())
         assertFalse(HexSegment(HexPoint(3, 1), HexPoint(6, 2)).isValid())
     }
+
 
     @Test
     @Tag("3")
@@ -126,9 +136,34 @@ class HexTests {
             hexagonByThreePoints(HexPoint(3, 1), HexPoint(2, 3), HexPoint(5, 4))
         )
         assertEquals(
+            Hexagon(HexPoint(2, 6), 3),
+            hexagonByThreePoints(HexPoint(2, 3), HexPoint(3, 3), HexPoint(5, 3))
+        )
+        assertEquals(
+            Hexagon(HexPoint(3, 3), 0),
+            hexagonByThreePoints(HexPoint(3, 3), HexPoint(3, 3), HexPoint(3, 3))
+        )
+        //       60  61  62  63  64  65
+        //     50  51  52  53  54  55  56
+        //   40  41  /42  43  44\  45  46  47
+        // 30  31  /32  33  34  35\  36  37  38       ??? a = 32, b = 33, c = 35 ??? min = 1; max = 3; R = 3; center = 05 or 62
+        //   21  |22  23  24  25  26|  27  28
+        //     12  \13  14  15  16/  17  18
+        //       03  \04  05  06/  07  08
+        assertEquals(
+            Hexagon(HexPoint(4, 3), 3),
+            hexagonByThreePoints(HexPoint(4, 6), HexPoint(1, 5), HexPoint(7, 0))
+        )
+
+        assertEquals(
+            Hexagon(HexPoint(4, 2), 2),
+            hexagonByThreePoints(HexPoint(3, 4), HexPoint(2, 3), HexPoint(6, 1))
+        )
+        assertEquals(
             3,
             hexagonByThreePoints(HexPoint(2, 3), HexPoint(3, 3), HexPoint(5, 3))?.radius
         )
+
     }
 
     @Test
