@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import kotlin.math.*
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -84,7 +85,16 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val res = mutableMapOf<String, Int>()
+    val text = File(inputName).readText()
+    for (str in substrings) {
+        val tmp = str.toLowerCase()
+        val catch = Regex("""(?=\$tmp)""").findAll(text.toLowerCase())
+        res[str] = catch.count()
+    }
+    return res
+}
 
 
 /**
@@ -101,15 +111,32 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    val resFile = File(inputName).readText()
-        .replace(Regex("""(?<=[ЖжЧчШшЩщ])ы"""), "и")
-        .replace(Regex("""(?<=[ЖжЧчШшЩщ])Ы"""), "И")
-        .replace(Regex("""(?<=[ЖжЧчШшЩщ])я"""), "а")
-        .replace(Regex("""(?<=[ЖжЧчШшЩщ])Я"""), "А")
-        .replace(Regex("""(?<=[ЖжЧчШшЩщ])ю"""), "у")
-        .replace(Regex("""(?<=[ЖжЧчШшЩщ])Ю"""), "У")
+    val resFile =
+        File(inputName).readText()                                                      // У данной задачи есть несколько способов решения.
+            .replace(Regex("""(?<=[ЖжЧчШшЩщ])ы"""), "и")
+            .replace(Regex("""(?<=[ЖжЧчШшЩщ])Ы"""), "И")
+            .replace(Regex("""(?<=[ЖжЧчШшЩщ])я"""), "а")
+            .replace(Regex("""(?<=[ЖжЧчШшЩщ])Я"""), "А")
+            .replace(Regex("""(?<=[ЖжЧчШшЩщ])ю"""), "у")
+            .replace(Regex("""(?<=[ЖжЧчШшЩщ])Ю"""), "У")
     File(outputName).bufferedWriter().use { it.write(resFile) }
+
+    /* val resFile = File(inputName).readText()
+        .replace(Regex("""(?<=[ЖжЧчШшЩщ])[ЫыЯяЮю]""")) {
+            when (it.value) {
+                "Ы" -> "И"
+                "ы" -> "и"
+                "Я" -> "А"
+                "я" -> "а"
+                "Ю" -> "У"
+                "ю" -> "у"
+                else -> (it.value)
+            }
+        }
+    File(outputName).bufferedWriter().use { it.write(resFile) } */
+
 }
+
 
 /**
  * Средняя (15 баллов)
@@ -131,12 +158,14 @@ fun sibilants(inputName: String, outputName: String) {
 fun centerFile(inputName: String, outputName: String) {
     var max = 0
     for (line in File(inputName).readLines()) {
-        if (max < line.trim().length) max = line.trim().length
+        if (max < line.trim().length)
+            max = line.trim().length
     }
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
             val currentLine = line.trim().length
-            if (currentLine == max) it.write(line.trim() + "\n")
+            if (currentLine == max)
+                it.write(line.trim() + "\n")
             else {
                 val count = (max - currentLine) / 2
                 it.write(" ".repeat(count) + line.trim() + "\n")
@@ -173,7 +202,52 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    var max = 0
+    for (line in File(inputName).readLines()) {
+        if (max < line.trim().length)
+            max = line.trim().length
+    }
+    File(outputName).bufferedWriter().use { it ->
+        for (line in File(inputName).readLines()) {
+            if (line.isEmpty()) it.newLine()
+            else {
+                val tmpLine = line.replace(Regex("""(\s+)"""), " ").trim()
+                val catch = Regex("""(\s)""").findAll(tmpLine)
+                if (catch.count() == 0) {
+                    it.write(tmpLine)
+                    it.newLine()
+                    continue
+                }
+                val kol = (max - tmpLine.length) / catch.count()
+                val chars = tmpLine.toMutableList()
+                var k = 0
+                for (i in catch.map { it.range.first }.toList()) {
+                    repeat(kol) {
+                        chars.add(i + k, ' ')
+                    }
+                    k += kol
+                }
+                k = 0
+                val ost = (max - tmpLine.length) % catch.count()
+                if (ost != 0) {
+                    var a = ost
+                    for (i in catch.map { it.range.first }.toList()) {
+                        chars.add(i + k, ' ')
+                        k += kol + 1
+                        a--
+                        if (a == 0) break
+                    }
+                }
+                it.write(buildString {
+                    for (ch in chars)
+                        append(ch)
+                })
+                it.newLine()
+
+            }
+
+        }
+    }
 }
 
 /**
@@ -196,7 +270,16 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
-fun top20Words(inputName: String): Map<String, Int> = TODO()
+fun top20Words(inputName: String): Map<String, Int> {
+    val res = mutableMapOf<String, Int>()
+    val text = File(inputName).readText().toLowerCase()
+    val catch = Regex("""(\p{L}*[^\d\s\p{P}])""").findAll(text)
+    for (word in catch.map { it.value })
+        res[word] = res.getOrDefault(word, 0) + 1
+    val tmp = res.toList().sortedByDescending { it.second }
+    return tmp.takeWhile { it.second >= tmp[20].second }.toMap()
+
+}
 
 /**
  * Средняя (14 баллов)
@@ -234,7 +317,25 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            for (ch in line) {
+                if (dictionary.containsKey(ch)) {
+                    if (ch.isUpperCase()) it.write(dictionary.getValue(ch).toUpperCase())
+                    else
+                        it.write(dictionary.getValue(ch).toLowerCase())
+                } else
+                    if (dictionary.containsKey(ch.toLowerCase())) {
+                        it.write(dictionary.getValue(ch.toLowerCase()).toLowerCase().capitalize())
+                    } else
+                        if (dictionary.containsKey(ch.toUpperCase())) {
+                            it.write(dictionary.getValue(ch.toUpperCase()).toLowerCase())
+                        } else it.write(ch.toString())
+
+            }
+            it.newLine()
+        }
+    }
 }
 
 /**
@@ -262,7 +363,22 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    var max = 0
+    var maxStr = ""
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            val setLine = line.toLowerCase().toCharArray().toSet()
+            if (line.length == setLine.size && line.length >= max) {
+                if (line.length == max) {
+                    maxStr += ", $line"
+                } else {
+                    max = line.length
+                    maxStr = line
+                }
+            }
+        }
+        it.write(maxStr)
+    }
 }
 
 /**
@@ -411,7 +527,8 @@ fun markdownToHtmlSimple(inputName: String, outputName: String): String = TODO()
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlLists(inputName: String, outputName: String) {
-    val res = File(inputName)
+    val res =
+        File(inputName)
     File(outputName).printWriter().use {
         it.println("<html>\n" + "<body>\n" + "<p>")
         val resList = mutableListOf<String>()
@@ -485,9 +602,49 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
-}
+    File(outputName).bufferedWriter().use { writer ->
+        repeat((lhv * rhv).toString().length - lhv.toString().length + 1) {
+            writer.write(" ")
+        }
+        writer.write(lhv.toString())
+        writer.newLine()
+        writer.write("*")
+        repeat((lhv * rhv).toString().length - rhv.toString().length) {
+            writer.write(" ")
+        }
+        writer.write(rhv.toString())
+        writer.newLine()
+        repeat((lhv * rhv).toString().length + 1) {
+            writer.write("-")
+        }
+        writer.newLine()
+        var tmp = rhv
+        for (i in 1..rhv.toString().length) {
+            tmp /= if (i == 1) {
+                repeat((lhv * rhv).toString().length - lhv.toString().length + 1) {
+                    writer.write(" ")
+                }
+                writer.write((lhv * (tmp % 10)).toString())
+                10
+            } else {
+                writer.write("+")
+                repeat((lhv * rhv).toString().length - lhv.toString().length - i + 1) {
+                    writer.write(" ")
+                }
+                writer.write((lhv * (tmp % 10)).toString())
+                10
+            }
 
+            writer.newLine()
+        }
+        repeat((lhv * rhv).toString().length + 1) {
+            writer.write("-")
+        }
+        writer.newLine()
+        writer.write(" ")
+        writer.write((lhv * rhv).toString())
+    }
+}
 
 /**
  * Сложная (25 баллов)
@@ -510,6 +667,73 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    File(outputName).bufferedWriter().use { writer ->
+        writer.write(" ")
+        writer.write(lhv.toString())
+        writer.write(" | ")
+        writer.write(rhv.toString())
+        writer.newLine()
+        val tmpRhv = (lhv / rhv).toString()
+        writer.write("-")
+        writer.write((rhv * (tmpRhv[0] - '0')).toString())
+        repeat(lhv.toString().length - (rhv * (tmpRhv[0] - '0')).toString().length + 3) {
+            writer.write(" ")
+        }
+        writer.write((lhv / rhv).toString())
+        writer.newLine()
+        repeat((rhv * (tmpRhv[0] - '0')).toString().length + 1) {
+            writer.write("-")
+        }
+        writer.newLine()
+        repeat((rhv * (tmpRhv[0] - '0')).toString().length) {
+            writer.write(" ")
+        }
+        val tmpLhv = (rhv * (tmpRhv[0] - '0')).toString().length
+        var ostLhv = (lhv % 10.0.pow(lhv.toString().length - tmpLhv)).toInt()
+        var newlhv =
+            ((lhv / 10.0.pow(lhv.toString().length - tmpLhv) - (rhv * (tmpRhv[0] - '0'))).toInt().toString()
+                    + (ostLhv / 10.0.pow(ostLhv.toString().length - 1)).toInt().toString())
+        if (rhv > lhv) writer.write(
+            (lhv / 10.0.pow(lhv.toString().length - tmpLhv) - (rhv * (tmpRhv[0] - '0'))).toInt().toString()
+        )
+        else {
+            writer.write(newlhv)
+            writer.newLine()
+        }
+        var spaces = (rhv * (tmpRhv[0] - '0')).toString().length
+        for (i in 1 until (lhv / rhv).toString().length) {
+            ostLhv %= 10.0.pow(ostLhv.toString().length - 1).toInt()
+            if ((rhv * (tmpRhv[i] - '0')).toString().length == newlhv.length) {
+                spaces--
+            } else spaces += newlhv.length - (rhv * (tmpRhv[i] - '0')).toString().length - 1
+            repeat(spaces) {
+                writer.write(" ")
+            }
+            writer.write("-")
+            writer.write((rhv * (tmpRhv[i] - '0')).toString())
+            writer.newLine()
+            repeat(spaces) {
+                writer.write(" ")
+            }
+            repeat((rhv * (tmpRhv[i] - '0')).toString().length + 1) {
+                writer.write("-")
+            }
+            writer.newLine()
+            newlhv = (newlhv.toInt() - rhv * (tmpRhv[i] - '0').toString().toInt()).toString()
+            if (newlhv.length < ((rhv * (tmpRhv[i] - '0')).toString().length + 1)) {
+                spaces += ((rhv * (tmpRhv[i] - '0')).toString().length + 1) - newlhv.length
+            }
+            repeat(spaces) {
+                writer.write(" ")
+            }
+            if (i == (lhv / rhv).toString().length - 1)
+                writer.write(newlhv)
+            else {
+                newlhv += (ostLhv / 10.0.pow(ostLhv.toString().length - 1)).toInt().toString()
+                writer.write(newlhv)
+                writer.newLine()
+            }
+        }
+    }
 }
 
