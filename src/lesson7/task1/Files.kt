@@ -277,8 +277,9 @@ fun top20Words(inputName: String): Map<String, Int> {
     for (word in catch.map { it.value })
         res[word] = res.getOrDefault(word, 0) + 1
     val tmp = res.toList().sortedByDescending { it.second }
-    return tmp.takeWhile { it.second >= tmp[20].second }.toMap()
-
+    return if (tmp.size >= 20)
+        tmp.takeWhile { it.second >= tmp[20].second }.toMap()
+    else tmp.toMap()
 }
 
 /**
@@ -628,7 +629,7 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
                 10
             } else {
                 writer.write("+")
-                repeat((lhv * rhv).toString().length - lhv.toString().length - i + 1) {
+                repeat((lhv * rhv).toString().length - (tmp % 10 * lhv).toString().length + 1 - i) {
                     writer.write(" ")
                 }
                 writer.write((lhv * (tmp % 10)).toString())
@@ -688,12 +689,12 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         repeat((rhv * (tmpRhv[0] - '0')).toString().length) {
             writer.write(" ")
         }
-        val tmpLhv = (rhv * (tmpRhv[0] - '0')).toString().length
-        var ostLhv = (lhv % 10.0.pow(lhv.toString().length - tmpLhv)).toInt()
-        var newlhv =
+        val tmpLhv = (rhv * (tmpRhv[0] - '0')).toString().length // 1
+        var ostLhv = (lhv % 10.0.pow(lhv.toString().length - tmpLhv)).toInt() // 1
+        var newlhv = // 1
             ((lhv / 10.0.pow(lhv.toString().length - tmpLhv) - (rhv * (tmpRhv[0] - '0'))).toInt().toString()
                     + (ostLhv / 10.0.pow(ostLhv.toString().length - 1)).toInt().toString())
-        if (rhv > lhv) writer.write(
+        if (rhv >= lhv) writer.write(
             (lhv / 10.0.pow(lhv.toString().length - tmpLhv) - (rhv * (tmpRhv[0] - '0'))).toInt().toString()
         )
         else {
