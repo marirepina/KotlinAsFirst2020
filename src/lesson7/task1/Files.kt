@@ -694,7 +694,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         var newlhv =
             ((lhv / 10.0.pow(lhv.toString().length - tmpLhv) - (rhv * (tmpRhv[0] - '0'))).toInt().toString()
                     + (ostLhv / 10.0.pow(ostLhv.toString().length - 1)).toInt().toString())
-        if (rhv.toString().length >= lhv.toString().length) writer.write(
+        if ((lhv / rhv).toString().length == 1) writer.write(
             (lhv / 10.0.pow(lhv.toString().length - tmpLhv) - (rhv * (tmpRhv[0] - '0'))).toInt().toString()
         )
         else {
