@@ -277,7 +277,7 @@ fun top20Words(inputName: String): Map<String, Int> {
     for (word in catch.map { it.value })
         res[word] = res.getOrDefault(word, 0) + 1
     val tmp = res.toList().sortedByDescending { it.second }
-    return if (tmp.size >= 20)
+    return if (tmp.size > 20)
         tmp.takeWhile { it.second >= tmp[20].second }.toMap()
     else tmp.toMap()
 }
@@ -622,7 +622,7 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
         var tmp = rhv
         for (i in 1..rhv.toString().length) {
             tmp /= if (i == 1) {
-                repeat((lhv * rhv).toString().length - lhv.toString().length + 1) {
+                repeat((lhv * rhv).toString().length - (lhv * (tmp % 10)).toString().length + 1) {
                     writer.write(" ")
                 }
                 writer.write((lhv * (tmp % 10)).toString())
