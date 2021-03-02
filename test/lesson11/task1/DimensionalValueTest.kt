@@ -16,26 +16,41 @@ internal class DimensionalValueTest {
     @Tag("12")
     fun base() {
         val first = DimensionalValue(1.0, "Kg")
-        assertEquals(1.0, first.value)
+        assertEquals(1000.0, first.value)
         assertEquals(Dimension.GRAM, first.dimension)
         val second = DimensionalValue("200 m")
         assertEquals(200.0, second.value)
         assertEquals(Dimension.METER, second.dimension)
+        val third = DimensionalValue("500000 mcHz")
+        assertEquals(0.5, third.value)
+        assertEquals(Dimension.HERTZ, third.dimension)
+        val fourth = DimensionalValue("900 MJ")
+        assertEquals(900000000.0, fourth.value)
+        assertEquals(Dimension.JOULE, fourth.dimension)
+        val fifth = DimensionalValue("50 nC")
+        assertEquals(0.5E-7, fifth.value, 1E-8)
+        assertEquals(Dimension.COULOMB, fifth.dimension)
     }
 
     @Test
     @Tag("6")
     fun plus() {
-        assertApproxEquals(DimensionalValue("2 Km"), DimensionalValue("1 Km") + DimensionalValue("1000 m"), 1e-8)
+        assertApproxEquals(DimensionalValue("2000 m"), DimensionalValue("1 Km") + DimensionalValue("1000 m"), 1e-8)
         assertThrows(IllegalArgumentException::class.java) {
             DimensionalValue("1 g") + DimensionalValue("1 m")
         }
+        assertApproxEquals(
+            DimensionalValue("46 J"),
+            DimensionalValue("45000000000 nJ") + DimensionalValue(1E-6, "MJ"), 1e-8
+        )
+
     }
 
     @Test
     @Tag("4")
     operator fun unaryMinus() {
         assertApproxEquals(DimensionalValue("-2 g"), -DimensionalValue("2 g"), 1e-12)
+        assertApproxEquals(DimensionalValue("-2 g"), DimensionalValue("2 g"), 1e-12)
     }
 
     @Test
@@ -45,12 +60,15 @@ internal class DimensionalValueTest {
         assertThrows(IllegalArgumentException::class.java) {
             DimensionalValue("1 g") - DimensionalValue("1 m")
         }
+        assertApproxEquals(DimensionalValue(-0.995, "C"), DimensionalValue("5 mC") - DimensionalValue("1 C"), 1e-10)
     }
 
     @Test
     @Tag("4")
     fun times() {
         assertApproxEquals(DimensionalValue("2 Kg"), DimensionalValue("2 g") * 1000.0, 1e-8)
+        assertApproxEquals(DimensionalValue("2 mHz"), DimensionalValue("2 Hz") * 0.001, 1e-8)
+
     }
 
     @Test
@@ -60,12 +78,14 @@ internal class DimensionalValueTest {
         assertThrows(IllegalArgumentException::class.java) {
             DimensionalValue("1 g") / DimensionalValue("1 m")
         }
+        assertEquals(100.0, DimensionalValue("3 KJ") / DimensionalValue("30 J"), 1e-10)
     }
 
     @Test
     @Tag("4")
     fun divDouble() {
         assertApproxEquals(DimensionalValue("42 mm"), DimensionalValue("42 m") / 1000.0, 1e-11)
+        assertApproxEquals(DimensionalValue("5 mcg"), DimensionalValue(5.0, "mg") / 1000.0, 1e-11)
     }
 
     @Test
@@ -73,12 +93,15 @@ internal class DimensionalValueTest {
     fun equals() {
         assertEquals(DimensionalValue("1 Kg"), DimensionalValue("1 Kg"))
         assertEquals(DimensionalValue("3 mm"), DimensionalValue("3 mm"))
+        assertEquals(DimensionalValue("1 MJ"), DimensionalValue("1000000J"))
+        assertNotEquals(DimensionalValue("100 m"), DimensionalValue("100 g"))
     }
 
     @Test
     @Tag("4")
     fun hashCodeTest() {
         assertEquals(DimensionalValue("1 Kg").hashCode(), DimensionalValue("1 Kg").hashCode())
+        assertNotEquals(DimensionalValue("1 Km").hashCode(), DimensionalValue("1 Kg").hashCode())
     }
 
     @Test
@@ -86,5 +109,10 @@ internal class DimensionalValueTest {
     fun compareTo() {
         assertTrue(DimensionalValue("1 Kg") < DimensionalValue("1500 g"))
         assertTrue(DimensionalValue("1 m") > DimensionalValue("900 mm"))
+        assertTrue(DimensionalValue("1 m") == DimensionalValue("1 m"))
+        assertThrows(IllegalArgumentException::class.java) {
+            DimensionalValue("1 g") < DimensionalValue("1 m")
+        }
+
     }
 }
