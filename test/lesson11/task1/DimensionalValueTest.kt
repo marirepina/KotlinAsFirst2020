@@ -50,7 +50,7 @@ internal class DimensionalValueTest {
     @Tag("4")
     operator fun unaryMinus() {
         assertApproxEquals(DimensionalValue("-2 g"), -DimensionalValue("2 g"), 1e-12)
-        assertApproxEquals(DimensionalValue("-2 g"), DimensionalValue("2 g"), 1e-12)
+        assertApproxEquals(DimensionalValue("2 g"), -DimensionalValue("-2 g"), 1e-12)
     }
 
     @Test

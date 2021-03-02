@@ -84,9 +84,11 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
     companion object {
         fun stringNumber(s: String): Double {
             val reg = Regex("""\d+""").findAll(s)
-            return if (reg.map { it.groupValues }.count() == 1)
-                reg.map { it.value }.joinToString().toDouble()
-            else -1.0
+            return if (reg.map { it.groupValues }.count() == 1) {
+                if (s[0] == '-') {
+                    -reg.map { it.value }.joinToString().toDouble()
+                } else reg.map { it.value }.joinToString().toDouble()
+            } else -1.0
 
         }
 
@@ -110,11 +112,7 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
     /**
      * Смена знака величины
      */
-    operator fun unaryMinus(): DimensionalValue {
-        return if (value < 0)
-            -DimensionalValue(-value, dimension.abbreviation)
-        else DimensionalValue(value, dimension.abbreviation)
-    }
+    operator fun unaryMinus(): DimensionalValue = DimensionalValue(-1.0 * value, dimension.abbreviation)
 
 
     /**
